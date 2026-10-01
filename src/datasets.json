@@ -1,0 +1,152 @@
+[
+  {
+    "id": "ballista",
+    "name": "Ballista",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12,
+    "videos": {
+      "bc1": "media/ballista-bc1.mp4",
+      "neural": "media/ballista-neural.mp4",
+      "neural_mse": "media/ballista-neural_mse.mp4",
+      "uncompressed": "media/ballista-uncompressed.mp4"
+    },
+    "poster": "media/ballista.webp"
+  },
+  {
+    "id": "barbershopchair01",
+    "name": "Barbershop chair",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12,
+    "videos": {
+      "bc1": "media/barbershopchair01-bc1.mp4",
+      "neural": "media/barbershopchair01-neural.mp4",
+      "neural_mse": "media/barbershopchair01-neural_mse.mp4",
+      "uncompressed": "media/barbershopchair01-uncompressed.mp4"
+    },
+    "poster": "media/barbershopchair01.webp"
+  },
+  {
+    "id": "bauble",
+    "name": "Bauble",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12,
+    "videos": {
+      "bc1": "media/bauble-bc1.mp4",
+      "neural": "media/bauble-neural.mp4",
+      "neural_mse": "media/bauble-neural_mse.mp4",
+      "uncompressed": "media/bauble-uncompressed.mp4"
+    },
+    "poster": "media/bauble.webp"
+  },
+  {
+    "id": "bomb",
+    "name": "Bomb",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12,
+    "videos": {
+      "bc1": "media/bomb-bc1.mp4",
+      "neural": "media/bomb-neural.mp4",
+      "neural_mse": "media/bomb-neural_mse.mp4",
+      "uncompressed": "media/bomb-uncompressed.mp4"
+    },
+    "poster": "media/bomb.webp"
+  },
+  {
+    "id": "cardbox",
+    "name": "Cardboard box",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12,
+    "videos": {
+      "bc1": "media/cardbox-bc1.mp4",
+      "neural": "media/cardbox-neural.mp4",
+      "neural_mse": "media/cardbox-neural_mse.mp4",
+      "uncompressed": "media/cardbox-uncompressed.mp4"
+    },
+    "poster": "media/cardbox.webp"
+  },
+  {
+    "id": "chessset",
+    "name": "Chess set",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12,
+    "videos": {
+      "bc1": "media/chessset-bc1.mp4",
+      "neural": "media/chessset-neural.mp4",
+      "neural_mse": "media/chessset-neural_mse.mp4",
+      "uncompressed": "media/chessset-uncompressed.mp4"
+    },
+    "poster": "media/chessset.webp"
+  },
+  {
+    "id": "firehydrant",
+    "name": "Fire hydrant",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12,
+    "videos": {
+      "bc1": "media/firehydrant-bc1.mp4",
+      "neural": "media/firehydrant-neural.mp4",
+      "neural_mse": "media/firehydrant-neural_mse.mp4",
+      "uncompressed": "media/firehydrant-uncompressed.mp4"
+    },
+    "poster": "media/firehydrant.webp"
+  },
+  {
+    "id": "glove",
+    "name": "Glove",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12,
+    "videos": {
+      "bc1": "media/glove-bc1.mp4",
+      "neural": "media/glove-neural.mp4",
+      "neural_mse": "media/glove-neural_mse.mp4",
+      "uncompressed": "media/glove-uncompressed.mp4"
+    },
+    "poster": "media/glove.webp"
+  },
+  {
+    "id": "numerickeypad",
+    "name": "Numeric keypad",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12,
+    "videos": {
+      "bc1": "media/numerickeypad-bc1.mp4",
+      "neural": "media/numerickeypad-neural.mp4",
+      "neural_mse": "media/numerickeypad-neural_mse.mp4",
+      "uncompressed": "media/numerickeypad-uncompressed.mp4"
+    },
+    "poster": "media/numerickeypad.webp"
+  },
+  {
+    "id": "spam",
+    "name": "Spam",
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "duration": 12,
+    "videos": {
+      "bc1": "media/spam-bc1.mp4",
+      "neural": "media/spam-neural.mp4",
+      "neural_mse": "media/spam-neural_mse.mp4",
+      "uncompressed": "media/spam-uncompressed.mp4"
+    },
+    "poster": "media/spam.webp"
+  }
+]

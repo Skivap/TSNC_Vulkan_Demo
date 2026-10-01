@@ -1,0 +1,24 @@
+{
+  "name": "tsnc-comparison",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "prepare:media": "node scripts/prepare-media.mjs",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-compare-slider": "^4.0.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "sharp": "^0.35.5",
+    "vite": "^8.3.1"
+  }
+}
