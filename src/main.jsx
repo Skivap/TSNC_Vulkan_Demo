@@ -13,17 +13,19 @@ function Icon({ name, ...props }) {
   return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>{paths[name]}</svg>;
 }
 
-function Comparison({ dataset, left, right }) {
+// `playback` survives remounts so a method change resumes at the same time and state.
+function Comparison({ dataset, left, right, zoom, setZoom, playback }) {
+  const resume = playback.current.dataset === dataset.id ? playback.current : null;
   const leftVideo = useRef(null);
   const rightVideo = useRef(null);
   const container = useRef(null);
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(!!resume?.playing);
   const [ready, setReady] = useState(false);
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(resume?.time ?? 0);
   const [error, setError] = useState('');
   const [position, setPosition] = useState(50);
-  const [speed, setSpeed] = useState(1);
-  const wantsPlayback = useRef(false);
+  const [speed, setSpeed] = useState(resume?.speed ?? 1);
+  const wantsPlayback = useRef(!!resume?.playing);
   const videos = () => [leftVideo.current, rightVideo.current].filter(Boolean);
 
   useEffect(() => {
@@ -51,6 +53,7 @@ function Comparison({ dataset, left, right }) {
     const ended = () => { pause(); pair.forEach(v => { v.currentTime = 0; }); setTime(0); };
     const failed = () => { pause(); setError('This video could not be loaded. Check that the media files are available, then try another dataset.'); };
     const waiting = () => { pair.forEach(v => v.pause()); setReady(false); };
+    pair.forEach(v => { v.playbackRate = speed; if (resume) v.currentTime = resume.time; });
     pair.forEach(v => { v.addEventListener('canplay', canPlay); v.addEventListener('seeked', canPlay); v.addEventListener('ended', ended); v.addEventListener('error', failed); v.addEventListener('waiting', waiting); });
     canPlay();
     animation = requestAnimationFrame(tick);
@@ -61,9 +64,10 @@ function Comparison({ dataset, left, right }) {
       pair.forEach(v => { v.pause(); v.removeEventListener('canplay', canPlay); v.removeEventListener('seeked', canPlay); v.removeEventListener('ended', ended); v.removeEventListener('error', failed); v.removeEventListener('waiting', waiting); });
     };
   }, [dataset]);
+  useEffect(() => { Object.assign(playback.current, { dataset: dataset.id, time, playing }); }, [time, playing]);
 
   async function toggle() {
-    if (playing) { wantsPlayback.current = false; videos().forEach(v => v.pause()); setPlaying(false); return; }
+    if (playing) { wantsPlayback.current = false; videos().forEach(v => v.pause()); setTime(videos()[0].currentTime); setPlaying(false); return; }
     setError('');
     wantsPlayback.current = true;
     setPlaying(true);
@@ -79,8 +83,8 @@ function Comparison({ dataset, left, right }) {
     videos().forEach(v => { v.pause(); v.currentTime = target; });
     setTime(target);
   }
-  function changeSpeed(value) { setSpeed(Number(value)); videos().forEach(v => { v.playbackRate = Number(value); }); }
-  const video = (ref, method) => <video ref={ref} src={asset(dataset.videos[method])} poster={asset(dataset.poster)} muted playsInline preload="auto" aria-label={`${dataset.name} — ${methods[method]}`} className="comparison-video" />;
+  function changeSpeed(value) { setSpeed(Number(value)); playback.current.speed = Number(value); videos().forEach(v => { v.playbackRate = Number(value); }); }
+  const video = (ref, method) => <video ref={ref} src={asset(dataset.videos[method])} poster={asset(dataset.poster)} muted playsInline preload="auto" aria-label={`${dataset.name} — ${methods[method]}`} className="comparison-video" style={{ transform: `scale(${zoom})` }} />;
 
   return <div className="player" ref={container}>
     <div className="video-stage">
@@ -93,6 +97,7 @@ function Comparison({ dataset, left, right }) {
       <span className="time">{clock(time)} <span>/ {clock(dataset.duration)}</span></span>
       <input className="timeline" type="range" min="0" max={dataset.duration} step={1 / dataset.fps} value={time} disabled={!ready} onChange={e => seek(e.target.value)} aria-label="Video timeline" />
       <select className="speed" aria-label="Playback speed" value={speed} onChange={e => changeSpeed(e.target.value)}><option value="0.5">0.5×</option><option value="1">1×</option><option value="2">2×</option></select>
+      <label className="zoom"><span>Zoom</span><input type="range" min="1" max="4" step="0.1" value={zoom} onChange={e => setZoom(Number(e.target.value))} aria-label="Zoom" aria-valuetext={`${zoom.toFixed(1)}×`} /><output>{zoom.toFixed(1)}×</output></label>
       <button className="icon-button" aria-label="Fullscreen comparison" onClick={() => { const action = document.fullscreenElement ? document.exitFullscreen() : container.current.requestFullscreen?.(); action?.catch(() => setError('Fullscreen is unavailable in this browser.')); }}><Icon name="expand" /></button>
     </div>
     <div className="compare-help"><span><span className="green-dot" />Synchronized playback</span><span>Drag the divider to compare · {Math.round(position)} / {100 - Math.round(position)}</span></div>
@@ -105,6 +110,8 @@ function App() {
   const [index, setIndex] = useState(Math.max(0, datasets.findIndex(d => d.id === initial.get('dataset'))));
   const [left, setLeft] = useState(Object.hasOwn(methods, initial.get('left')) ? initial.get('left') : 'neural');
   const [right, setRight] = useState(Object.hasOwn(methods, initial.get('right')) ? initial.get('right') : 'uncompressed');
+  const [zoom, setZoom] = useState(1);
+  const playback = useRef({ dataset: null, time: 0, playing: false, speed: 1 });
   const dataset = datasets[index];
   const activeCard = useRef(null);
   const datasetStrip = useRef(null);
@@ -127,7 +134,7 @@ function App() {
       <div className="intro"><p className="eyebrow">THE DETAILS MAKE THE DIFFERENCE</p><h1>Less data. <span>Same detail.</span></h1><p className="intro-copy">Explore texture compression, side by side.<br className="mobile-break" /> Ten datasets. Four methods. Your perspective.</p></div>
       <section className="workspace" aria-label="Dataset video comparison">
         <div className="workspace-top"><div className="dataset-heading"><span className="eyebrow">DATASET {String(index + 1).padStart(2, '0')} / {datasets.length}</span><h2>{dataset.name}</h2></div><div className="method-controls">{selector('LEFT', left, setLeft)}<button className="swap-button" aria-label="Swap comparison sides" onClick={() => { setLeft(right); setRight(left); }}><Icon name="swap" /></button>{selector('RIGHT', right, setRight)}</div></div>
-        <Comparison key={`${dataset.id}-${left}-${right}`} dataset={dataset} left={left} right={right} />
+        <Comparison key={`${dataset.id}-${left}-${right}`} dataset={dataset} left={left} right={right} zoom={zoom} setZoom={setZoom} playback={playback} />
         <div className="dataset-meta"><span>{dataset.width} × {dataset.height}<i />{dataset.fps} FPS<i />360° orbit</span><span>Rendered captures · {dataset.duration}s</span></div>
       </section>
       <section className="dataset-library" aria-label="Choose a dataset"><div className="library-heading"><div><h2>Explore the datasets <span>{datasets.length}</span></h2><p>Select a scene to take a closer look.</p></div><div className="dataset-navigation"><button className="icon-button" aria-label="Previous dataset" disabled={index === 0} onClick={() => setIndex(index - 1)}><Icon name="previous" /></button><button className="icon-button" aria-label="Next dataset" disabled={index === datasets.length - 1} onClick={() => setIndex(index + 1)}><Icon name="next" /></button></div></div>
